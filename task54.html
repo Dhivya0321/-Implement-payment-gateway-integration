@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Razorpay Payment</title>
+</head>
+<body>
+
+<h2>Pay ₹500</h2>
+
+<button onclick="payNow()">
+    Pay Now
+</button>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+async function payNow() {
+
+    const response = await fetch(
+        "http://localhost:3000/create-order",
+        {
+            method: "POST"
+        }
+    );
+
+    const order = await response.json();
+
+    const options = {
+        key: "YOUR_RAZORPAY_KEY_ID",
+        amount: order.amount,
+        currency: order.currency,
+        order_id: order.id,
+
+        name: "My Store",
+
+        description: "Payment Test",
+
+        handler: function (response) {
+
+            alert(
+                "Payment Successful\n" +
+                response.razorpay_payment_id
+            );
+
+        }
+    };
+
+    const rzp = new Razorpay(options);
+
+    rzp.open();
+}
+</script>
+
+</body>
+</html>
